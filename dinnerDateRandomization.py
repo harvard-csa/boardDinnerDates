@@ -2,32 +2,49 @@ import random
 import scipy.stats as ss
 import math
 
-class Member:
-  def __init__(self, name, id):
-    self.name = name
-    self.id = id
+BOARD = ['Danika', 'Hannah', 'Amy', 'Chris',
+        'Kathy', 'Carol', 'Alvin', 'Will', 
+        'David', 'Tex', 'Kalos', 'Glen',
+        'Shwe', 'Vick', 'Margo', 'Audrey G', 
+        'Eric', 'Janice', 'Daniel', 'Cody', 
+        'Christy', 'Steph', 'Audrey K', 'Christina',
+        'Ricky', 'Sernea', 'Sophia']
+GROUP_SIZE = 4
+boardSize = len(BOARD)
+EVEN_OUT_INDEX = 24
+history = {}
 
-board = ["Kathy", "Matthew", 'Danika', 'Hannah', 
-        'Audrey K', 'Christina', 'Ricky', 'Steph', 
-        'Chris', 'Alvin', 'Chao', 'David', 
-        'Vick', 'Tex', 'Kalos', 'Carol', 
-        'Sophia', 'Amy', 'Serena', 'Daran', 
-        'Jasmine', 'Joy', 'Emily',
-        'Glen', 'Shwe', 'Margo', 'Eric',
-        'Audrey G', 'Daniel', 'Christy']
-groupSize = 4
-evenOut = 28
+def initialize():
+    randomNums = [random.random() for _ in range(boardSize)]
+    
+    # converts random floats to rank ordering
+    ranks = ss.rankdata(randomNums)
+    
+    # matches a random number 1-30 to board members
+    board = zip(BOARD, ranks)
+    
+    # sort members by random number (1-4 is a group, 2-8...)
+    board = sorted(board, key = lambda p: p[1])
+    
+    
+    for i in range(0, boardSize, 4):
+        tmp = [board[i][0], board[i+1][0], board[i+2][0]]
+        if i != EVEN_OUT_INDEX:
+            tmp += [board[i+3][0]]
+        if 'Chris' in tmp and 'Christina' in tmp or sorted(tmp) in history.values():
+            print('redo')
+            return('redo')
+        
+    for i in range(0, boardSize, 4):
+        tmp = [board[i][0], board[i+1][0], board[i+2][0]]
+        if i != EVEN_OUT_INDEX:
+            tmp += [board[i+3][0]]
+        history[len(history)] = sorted(tmp)
+        (print(', '.join(tmp)))
+        
 
-randomNums = [random.random() for x in range(len(board))]
-ranks = ss.rankdata(randomNums)
-for i in range(len(board)):
-    if ranks[i] == evenOut:
-        board[i] = Member(board[i], math.ceil(ranks[i]/groupSize + 1))
-    else:
-        board[i] = Member(board[i], math.ceil(ranks[i]/groupSize))
-board.sort(key=lambda x: x.id)
-
-for i in range(len(board)):
-    if i > 0 and board[i].id != board[i-1].id:
-        print('\n')
-    print(board[i].name)
+if __name__ == "__main__":
+    for i in range(1,17):
+        print("Week", i)
+        while initialize() == 'redo':
+            pass
