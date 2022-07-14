@@ -31,7 +31,7 @@ def initialize():
         tmp = [board[i][0], board[i+1][0], board[i+2][0]]
         if i != EVEN_OUT_INDEX:
             tmp += [board[i+3][0]]
-        if 'Chris' in tmp and 'Christina' in tmp or sorted(tmp) in history.values():
+        if sorted(tmp) in history.values():
             print('redo')
             return('redo')
         
